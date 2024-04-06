@@ -17,29 +17,36 @@ declare global {
     lat : number,
     lon : number,
     content : Array<string>,
+    date : Date,
+    address : string,
   }
 
   const MarkerInfo : Array<MarkerInfoProp> = [
     {lat: 37.547282739995964, lon: 127.06659525293044, content : [
         "안녕", "하이"
-    ]},
+    ],
+date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
     {lat: 37.54567075457188, lon: 127.06515670523791, content : [
         "안녕", "하이", "만나서"
-    ]},
+    ],
+    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
     {lat: 37.54457049768203, lon: 127.06701152072206 , content : [
         "안녕", "하이", "악담"
-    ]},
+    ],
+    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
     {lat: 37.547598261308345, lon: 127.0662899976558 , content : [
         "안녕", "하이", "어떻게"
-    ]},
+    ],
+    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
     {lat: 37.54689601243545, lon: 127.06533882833946, content : [
         "안녕", "하이"
-    ]},
+    ],
+    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
   ]
 
 const StampPage = () => {
     // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
-    const [myposition] = usePositionstore((state) => [state.position]);
+    const [myposition, setmyPosition] = usePositionstore((state) => [state.position, state.setPosition]);
     const [stamp,  setStamp] = useStampstore((state)=>[state.stamp, state.setStamp]);
     const [open, setOpen] = useState(false);
     useEffect(() => {
@@ -58,11 +65,29 @@ const StampPage = () => {
                 level: 3,
               };
               const map = new window.kakao.maps.Map(container, options);
+              if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const IocPosition = new window.kakao.maps.LatLng(lat, lon);
+
+                    setmyPosition({
+                        lat : lat,
+                        lon : lon,
+                    })
+
+                    // 지도 중심을 사용자의 현재 위치로
+                    map.setCenter(IocPosition);
+                },(error) => {
+                    console.log(error);
+                });
+              }else{
+                alert("에러 발생")
+              }
               MarkerInfo.forEach((info)=>{
                 const imageSrc = cloudMarker, 
-                imageSize = new window.kakao.maps.Size(69, 48), // 마커 이미지의 크기
-                imageOption = {offset: new window.kakao.maps.Point(27, 69)};
-                const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+                imageSize = new window.kakao.maps.Size(69, 48); // 마커 이미지의 크기
+                const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
                 const markerPosition = new window.kakao.maps.LatLng(info.lat, info.lon);
                 const marker = new window.kakao.maps.Marker({
                     position : markerPosition,
@@ -75,8 +100,9 @@ const StampPage = () => {
                     setStamp({
                         lat : info.lat,
                         lon : info.lon,
-                        date : new Date(),
+                        date : info.date,
                         content : info.content,
+                        address : info.address,
                     });
                     setOpen(true);
                 });
@@ -128,11 +154,11 @@ const MarkInfo = ({info} : {info : stampType}) => {
             </InfoBtn>
             <InfoBtn>
                 <Time />
-                <div>21:15</div>
+                <div>{dayjs(info.date).format('hh:mm')}</div>
             </InfoBtn>
             <InfoBtn>
                 <Location />
-                <div>서울특별시 성동구 아차산로 17길 48</div>
+                <div>{info.address}</div>
             </InfoBtn>
         </div>
         </div>
