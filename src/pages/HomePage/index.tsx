@@ -1,18 +1,11 @@
-import { useState } from 'react';
+import { usePopStore } from '@/store/popup';
 import Modal from 'react-modal';
+import Close from '/public/close.png';
+import LoginBanner from '/public/loginBanner.png';
+import LoginModal from '/public/loginModal.png';
 
 function HomePage() {
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const Rest_api_key = '5818289447397369d006bcd7145c25d6';
-  const redirect_uri = 'http://localhost:3000/login/callback';
-  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
-  const handleLogin = () => {
-    window.location.href = kakaoURL;
-  };
-
-  function openModal() {
-    setIsOpen(true);
-  }
+  const [open, setIsOpen] = usePopStore((state) => [state.open, state.setIsOpen]);
   const customStyles = {
     content: {
       top: '50%',
@@ -24,29 +17,34 @@ function HomePage() {
     },
   };
 
-  function afterOpenModal() {
-    console.log('open');
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const Rest_api_key = '5818289447397369d006bcd7145c25d6';
+  const redirect_uri = 'http://localhost:3000/login/callback';
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+  const handleLogin = () => {
+    window.location.href = kakaoURL;
+  };
   return (
     <div>
       Home
       <button onClick={handleLogin}>카카오 로그인</button>
-      <button className="bg-red-600 text-red-600" onClick={openModal}>
-        팝업 날리기
-      </button>
-      <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <button onClick={closeModal}>close</button>
-      </Modal>
+      <button onClick={() => setIsOpen(true)}>팝업 날리기</button>
+      {open && (
+        <Modal isOpen={open} onRequestClose={() => setIsOpen(false)} style={customStyles}>
+          <div className="flex-col ">
+            <div dir="rtl" className="h-8">
+              <img
+                src={Close}
+                className="h-5 w-5 cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              />
+            </div>
+            <img src={LoginBanner} className=" mb-5 h-[400px] w-96" />
+            <div className="mb-3 flex items-center justify-center ">
+              <img src={LoginModal} className="h-10 w-32 " />
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
