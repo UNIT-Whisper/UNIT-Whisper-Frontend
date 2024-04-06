@@ -7,6 +7,9 @@ import FirstSection from './pages/Onboarding/FirstSection';
 import SecondSection from './pages/Onboarding/SecondSection';
 import ThirdSection from './pages/Onboarding/ThirdSection';
 import OnBoardingLayout from './components/OnboardingLayout';
+import MapLayout from './components/MapLayout';
+import MapPage from './pages/MapPage';
+import StampPage from './pages/StampPage';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +48,20 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path : '/',
+    element : <MapLayout />,
+    children : [
+      {
+        path : 'mapMarker',
+        element : <MapPage />
+      },
+      {
+        path : 'mapStamp',
+        element : <StampPage />
+      }
+    ]
+  }
 ]);
 
 export default router;

@@ -14,7 +14,14 @@ const queryClient = new QueryClient({
     },
   },
 });
+function loadKakaoMapScript() {
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAOMAP_JAVASCRIPT_APP_KEY}&autoload=false`;
+  document.head.appendChild(script);
+}
 
+loadKakaoMapScript();
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
