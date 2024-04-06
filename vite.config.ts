@@ -1,7 +1,7 @@
-import * as path from "path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import svgr from "vite-plugin-svgr";
+import * as path from 'path';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,8 +10,11 @@ export default defineConfig({
     port: 3000,
   },
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    alias: [
+      { find: '@', replacement: path.resolve(__dirname, 'src') },
+      { find: '@pages', replacement: path.resolve(__dirname, 'src/pages') },
+      { find: '@components', replacement: path.resolve(__dirname, 'src/components') },
+      { find: '@styles', replacement: path.resolve(__dirname, 'src/styles') },
+    ],
   },
 });
