@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import { StateCreator, create } from "zustand";
+import { PersistOptions, createJSONStorage, persist } from "zustand/middleware";
 
 type cloudType = {
     text : string,
@@ -10,21 +11,28 @@ type cloudType = {
   interface CloudState {
     clouds: cloudType[];
     addCloud: (newCloud: cloudType) => void;
-    getClouds: () => cloudType[];
-    resetClouds: () => void;
   }
+
+  type MyPersist = (
+    config : StateCreator<CloudState>,
+    options : PersistOptions<CloudState>
+  ) => StateCreator<CloudState>
   
   // 스토어 생성
-  const useCloudStore = create<CloudState>((set, get) => ({
-    clouds: [], // 초기 상태
-    addCloud: (newCloud) =>
-      set((state) => ({
-        clouds: [...state.clouds, newCloud],
-      })),
-      getClouds: () => {
-        return get().clouds; // get을 사용하여 현재 clouds 상태 반환
-      },
-      resetClouds: () => set(() => ({ clouds: [] })),
-  }));
+  const useCloudStore = create<CloudState>(
+    (persist as MyPersist)(
+        (set,get) =>({
+            clouds : [],
+            addCloud : (newCloud : cloudType) =>
+            set({
+                clouds : [...get().clouds, newCloud]
+            })
+        }),
+        {
+            name : "cloud-storage",
+            storage : createJSONStorage(()=>sessionStorage),
+        },
+    ),
+    );
 
   export default useCloudStore;

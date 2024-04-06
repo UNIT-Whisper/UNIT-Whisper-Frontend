@@ -1,12 +1,8 @@
 import useCloudStore from "@/store/chat/chat";
-import { useEffect } from "react";
 
 function ChatCollectionPage() {
-  const clouds = useCloudStore((state) => state.getClouds());
-  useEffect(()=>{
-    console.log(clouds);
-  },[])
-  return <div>
+  const clouds = useCloudStore(state => state.clouds);
+  return <div className="relative">
               {clouds.map((el,index) => (
             <div
               key={index}

@@ -12,9 +12,7 @@ import useCloudStore from '@/store/chat/chat';
 
 function ChatPage() {
   const [data, setData] = useState('');
-  const clouds = useCloudStore((state) => state.getClouds());
-  const addCloud = useCloudStore((state) => state.addCloud);
-  const resetCloud = useCloudStore((state) => state.resetClouds);
+  const [clouds, addCloud] = useCloudStore((state) => [state.clouds, state.addCloud]);
   const [isComposing, setIsComposing] = useState(false);
   const [leftPosition, setLeftPosition] = useState('0%');
   const [imgIdx, setImgIdx] = useState(0);
@@ -22,9 +20,7 @@ function ChatPage() {
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setData(e.target.value);
   };
-  useEffect(() => {
-    resetCloud;
-  }, []);
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'; // 높이를 auto로 설정하여 먼저 크기를 축소합니다.
@@ -63,7 +59,7 @@ function ChatPage() {
           />
         </div>
       </div>
-      <div className="relative h-24 w-full max-w-[380px]">
+      <div className="relative h-24 w-full">
         {clouds.map((el, index) => (
           <Cloud key={index} data={el.randomIdx} left={el.leftPosition} index={index} />
         ))}
@@ -106,20 +102,18 @@ const Cloud = ({ data, left, index }: { data: number; left: string; index: numbe
   }, []);
 
   return (
-    <div className="max-w-[380px]">
-      <img
-        src={randomChatCloudImage}
-        alt="구름애들"
-        style={{
-          position: 'absolute',
-          left: left,
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
-          top: `${height}px`,
-          transition: 'top 1.2s ease-out',
-        }}
-      />
-    </div>
+    <img
+      src={randomChatCloudImage}
+      alt="구름애들"
+      style={{
+        position: 'absolute',
+        left: left,
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+        top: `${height}px`,
+        transition: 'top 1.2s ease-out',
+      }}
+    />
   );
 };
 
