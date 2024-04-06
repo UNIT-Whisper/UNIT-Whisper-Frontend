@@ -1,6 +1,11 @@
 import usePositionstore from '@/store/map/position';
-import  {  useEffect  } from 'react'
+import  {  ReactNode, useCallback, useEffect, useState  } from 'react'
 import cloudMarker from '@/images/marker.png'
+import useStampstore, { stampType } from '@/store/map/stamp';
+import dayjs from 'dayjs'
+import Calendar from '@/svg/calendar.svg?react';
+import Time from '@/svg/time.svg?react';
+import Location from '@/svg/location.svg?react';
 
 declare global {
     interface Window {
@@ -35,6 +40,8 @@ declare global {
 const StampPage = () => {
     // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
     const [myposition] = usePositionstore((state) => [state.position]);
+    const [stamp,  setStamp] = useStampstore((state)=>[state.stamp, state.setStamp]);
+    const [open, setOpen] = useState(false);
     useEffect(() => {
         const mapScript = document.createElement("script");
     
@@ -63,12 +70,15 @@ const StampPage = () => {
                 });
                 marker.setMap(map);
 
-                const infowindow = new window.kakao.maps.InfoWindow({
-                    content : `<div style="padding:5px">${info.content[0]}</div>`
-                });
 
                 window.kakao.maps.event.addListener(marker, 'click',()=>{
-                    infowindow.open(map,marker);
+                    setStamp({
+                        lat : info.lat,
+                        lon : info.lon,
+                        date : new Date(),
+                        content : info.content,
+                    });
+                    setOpen(true);
                 });
 
 
@@ -83,12 +93,58 @@ const StampPage = () => {
         }, []);
         
       return (
-        <div
+        <div className='relative w-full h-full'>
+                <div
           id="map"
           className='w-full h-full'
         ></div>
+        {open && <MarkInfo info={stamp} />}
+        </div>
       );
 
+}
+
+const MarkInfo = ({info} : {info : stampType}) => {
+    const InfoBtn = useCallback(({ children }: { children: ReactNode }) => {
+        return (
+          <div className="flex justify-center items-center gap-1.5 py-1.5 px-2 font-semibold font-Pretendard text-xs text-[#4A5568] bg-[#EDF2F7] rounded-md">
+            {children}
+          </div>
+        );
+      }, []);
+    return(
+        <div className='absolute bottom-0 flex w-full h-[350px] py-9 px-6 flex-col items-start gap-5 bg-white z-50'
+        style={{
+            "borderRadius" : "20px 20px 0px 0px",
+        }}
+        >
+        <div className='py-4 w-full border-b-[1px] border-solid border-b-[#E2E8F0]'>
+        <img src={cloudMarker} alt='정보로고' className='w-[70px] h-12'/>
+        <div className=' font-Pretendard text-lg font-bold'>구름 내용 보기</div>
+        <div className='flex gap-[9px]'>
+            <InfoBtn>
+                <Calendar />
+                <div>{dayjs(info.date).format("YYYY.MM.DD")}</div>
+            </InfoBtn>
+            <InfoBtn>
+                <Time />
+                <div>21:15</div>
+            </InfoBtn>
+            <InfoBtn>
+                <Location />
+                <div>서울특별시 성동구 아차산로 17길 48</div>
+            </InfoBtn>
+        </div>
+        </div>
+        <div className='overflow-y-scroll whitespace-pre-wrap'>
+        {info.content.map((e, i)=>{
+            return(
+    <div key={i} className='mb-1'>{e}</div>
+            )
+        })}
+        </div>
+      </div>
+    )
 }
 
 export default StampPage
