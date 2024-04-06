@@ -8,6 +8,8 @@ export default {
     extend: {},
     fontFamily: {
       Jalnan: ["Jalnan"],
+      Ellice : ["Ellice"],
+      Pretendard:['Pretendard']
     },
   },
   plugins: [],

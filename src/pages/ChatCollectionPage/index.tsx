@@ -80,7 +80,7 @@ const Cloud = (prop : cloudProp) => {
 <div
   style={{
     position: 'absolute',
-    left: prop.index % 2 == 0 ? "0px" : "250px",
+    left: prop.index % 2 == 0 ? "-50px" : "200px",
     top: `${height}px`,
     width: "350px", 
     height: "300px", 

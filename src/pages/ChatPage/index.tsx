@@ -28,7 +28,7 @@ function ChatPage() {
     }
   }, [data]);
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    setLeftPosition(`${Math.floor(Math.random() * 50)}%`);
+    setLeftPosition(`${Math.floor(Math.random() * 40)}%`);
     setImgIdx(Math.floor(Math.random() * 9));
     if (isComposing) return;
     if (event.key === 'Enter') {
