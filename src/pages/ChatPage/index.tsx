@@ -43,10 +43,12 @@ function ChatPage() {
       setData(''); // 입력 필드 초기화
     }
   };
+
+  console.log(clouds);
   return (
     <>
-      <div className="absolute top-[91.5%] z-30 w-full max-w-[500px] px-5">
-        <div className="flex w-full items-center gap-1 rounded border border-solid bg-white px-4 py-3">
+      <div className="absolute top-[88%] z-30 ml-3 w-full max-w-[460px]">
+        <div className="flex w-full max-w-[435px] items-center gap-1 rounded border border-solid bg-white px-4 py-3">
           <textarea
             value={data}
             ref={textareaRef}
@@ -59,10 +61,18 @@ function ChatPage() {
           />
         </div>
       </div>
-      <div className="relative h-24 w-full">
-        {clouds.map((el, index) => (
-          <Cloud key={index} data={el.randomIdx} left={el.leftPosition} index={index} />
-        ))}
+      <div className="relative h-24 w-full max-w-[460px]">
+        {clouds.length === 0 ? (
+          <div className="flex h-[600px] items-center justify-center text-xl font-bold text-[#CBD5E0]">
+            오늘 하고 싶은 말 한마디를 적어주세요
+          </div>
+        ) : (
+          <div>
+            {clouds.map((el, index) => (
+              <Cloud key={index} data={el.randomIdx} left={el.leftPosition} index={index} />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
