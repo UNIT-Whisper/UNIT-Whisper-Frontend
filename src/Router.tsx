@@ -61,7 +61,7 @@ const router = createBrowserRouter([
         element: <MapPage />,
       },
       {
-        path: 'mapStamp',
+        path: 'mapStamp/:whisperId',
         element: <StampPage />,
       },
     ],

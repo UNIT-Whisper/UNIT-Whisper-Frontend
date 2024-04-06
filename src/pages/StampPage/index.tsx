@@ -1,5 +1,5 @@
 import usePositionstore from '@/store/map/position';
-import  {  ReactNode, useCallback, useEffect, useState  } from 'react'
+import  {  ReactNode, useCallback, useEffect  } from 'react'
 import cloudMarker from '@/images/marker.png'
 import useStampstore, { stampType } from '@/store/map/stamp';
 import dayjs from 'dayjs'
@@ -7,6 +7,8 @@ import Calendar from '@/svg/calendar.svg?react';
 import Time from '@/svg/time.svg?react';
 import Location from '@/svg/location.svg?react';
 import { axiosInstance } from '@/apis/sendCloud';
+import { useParams } from 'react-router-dom';
+import useOpenstore from '@/store/map/open';
 
 declare global {
     interface Window {
@@ -24,7 +26,9 @@ createDate : new Date(), address : "서울특별시 성동구 아차산로 17길
 const StampPage = () => {
     const [myposition] = usePositionstore((state) => [state.position]);
     const [stamp,  setStamp] = useStampstore((state)=>[state.stamp, state.setStamp]);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useOpenstore((state)=>[state.open, state.setOpen]);
+    const { whisperId } = useParams();
+    const whisperIdx: number = parseInt(whisperId!);
     useEffect(() => {
         const mapScript = document.createElement("script");
     
@@ -32,62 +36,48 @@ const StampPage = () => {
         mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=34b875f3f1bb52af7bfb9963e4dbc291&autoload=false&libraries=services`;
     
         document.head.appendChild(mapScript);
-    
-        mapScript.onload = () => {
-            window.kakao.maps.load(() => {
-              const container = document.getElementById("map");
-              const options = {
-                // 여기에 알람이 간 위도 경도를 보내주시면 됩니다.
-                center: new window.kakao.maps.LatLng(myposition.lat, myposition.lon),
-                level: 3,
-              };
-              const map = new window.kakao.maps.Map(container, options);
-              MarkerInfo.forEach((info)=>{
-                const imageSrc = cloudMarker, 
-                imageSize = new window.kakao.maps.Size(69, 48); // 마커 이미지의 크기
-                const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
-                const markerPosition = new window.kakao.maps.LatLng(info.latitude, info.longitude);
-                const marker = new window.kakao.maps.Marker({
-                    position : markerPosition,
-                    image: markerImage
-                });
-                marker.setMap(map);
-
-
-                window.kakao.maps.event.addListener(marker, 'click',()=>{
-                    // axiosInstance.get(`/whisper/${whisperId}`,{
-                    //     headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken') as string}` },
-                    //   }).then(
-                    //     response => {
-                    //         setStamp({
-                    //             whisperId : response.data.whisperId,
-                    //             latitude : response.data.latitude,
-                    //             longitude : response.data.longitude,
-                    //             createDate : response.data.createDate,
-                    //             content : response.data.content,
-                    //             address : response.data.address,
-                    //         });
-                    //         setOpen(true);
-                    //     }
-                    //   ).catch(
-                    //     error => console.log(error),
-                    //   )
-                    setStamp({
-                        whisperId : info.whisperId,
-                        latitude : info.latitude,
-                        longitude : info.longitude,
-                        createDate : info.createDate,
-                        content : info.content,
-                        address : info.address,
-                    });
-                    setOpen(true);
-                });
-
-
-
-              });
-            });
-          };
+        const loadDataAndCreateMap = async () => {
+                    axiosInstance.get(`/whisper/${whisperIdx}`,{
+                        headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken') as string}` },
+                      }).then(
+                        response => {
+                            setStamp({
+                                whisperId : response.data.data.whisperId,
+                                latitude : response.data.data.latitude,
+                                longitude : response.data.data.longitude,
+                                createDate : response.data.data.createDate,
+                                content : response.data.data.content,
+                                address : response.data.data.address,
+                            });
+                                window.kakao.maps.load(() => {
+                                  const container = document.getElementById("map");
+                                  const options = {
+                                    // 여기에 알람이 간 위도 경도를 보내주시면 됩니다.
+                                    center: new window.kakao.maps.LatLng(myposition.lat, myposition.lon),
+                                    level: 3,
+                                  };
+                                  const map = new window.kakao.maps.Map(container, options);
+                                  MarkerInfo.forEach((info)=>{
+                                    const imageSrc = cloudMarker, 
+                                    imageSize = new window.kakao.maps.Size(69, 48); // 마커 이미지의 크기
+                                    const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+                                    const markerPosition = new window.kakao.maps.LatLng(info.latitude, info.longitude);
+                                    const marker = new window.kakao.maps.Marker({
+                                        position : markerPosition,
+                                        image: markerImage
+                                    });
+                                    marker.setMap(map);
+                                    window.kakao.maps.event.addListener(marker, 'click',()=>{
+                                        setOpen(!open);
+                                    });
+                                  });
+                                });
+                        }
+                      ).catch(
+                        error => console.log(error),
+                      )
+        }
+            mapScript.onload = loadDataAndCreateMap;
           return () => {
             // 컴포넌트가 언마운트 될 때 스크립트 태그 제거
             document.head.removeChild(mapScript);
@@ -139,7 +129,7 @@ const MarkInfo = ({info} : {info : stampType}) => {
         </div>
         </div>
         <div className='overflow-y-scroll whitespace-pre-wrap'>
-    <div className='mb-1'>{info.content}</div>
+        <div className='mb-1'>{info.content}</div>
         </div>
       </div>
     )
