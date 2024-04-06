@@ -52,13 +52,12 @@ function ChatCollectionPage() {
 
       <button
         className={`${!closePop && 'my-5'} ml-8 h-14 w-[400px] rounded-md bg-[#3BA8F4] text-white hover:bg-[#0096FF]`}
-        onClick={() =>{
+        onClick={() => {
           sessionStorage.getItem('accessToken') === null
-          ? setIsOpen(true)
-          : '여기서 선택하면 댑니다';
-          navigator("/mapMarker",{replace : true});
-        }
-        }
+            ? setIsOpen(true)
+            : '여기서 선택하면 댑니다';
+          navigator('/mapMarker', { replace: true });
+        }}
       >
         선택완료
       </button>
@@ -108,7 +107,7 @@ const Cloud = (prop: cloudProp) => {
       text: text,
       index: index,
     };
-    if (check == false) {
+    if (check === true) {
       addCloud(checkCloud);
       setCheck(!check);
     } else {
