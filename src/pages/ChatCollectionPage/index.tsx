@@ -28,10 +28,11 @@ function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);
   const [closePop, setClosePop] = useState(true);
   const [setIsOpen] = usePopStore((state) => [state.setIsOpen]);
+  console.log(closePop);
   return (
     <>
       <div
-        className={`relative h-[${!closePop ? '700px' : '650px'}] max-h-[${!closePop ? '700px' : '650px'}] w-full overflow-x-hidden overflow-y-scroll`}
+        className={`relative ${closePop ? 'h-[650px]' : 'h-[730px]'} ${closePop ? '  max-h-[650px]' : 'h-[730px]'}  w-full overflow-x-hidden overflow-y-scroll`}
       >
         {clouds.map((el, index) => (
           <Cloud key={index} index={index} text={el.text} randomIdx={el.randomIdx} />

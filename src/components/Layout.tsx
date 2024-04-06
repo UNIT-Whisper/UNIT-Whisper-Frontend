@@ -13,7 +13,12 @@ const Layout = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const resetClouds = useCloudStore((state) => state.resetClouds);
-  const [open, setIsOpen] = usePopStore((state) => [state.open, state.setIsOpen]);
+  const [open, logout, setIsLogout, setIsOpen] = usePopStore((state) => [
+    state.open,
+    state.logout,
+    state.setIsLogout,
+    state.setIsOpen,
+  ]);
   const customStyles = {
     content: {
       top: '50%',
@@ -38,16 +43,13 @@ const Layout = () => {
 
           <div className="flex justify-end">
             <img src={offAlert} className="mr-2 h-8 w-8 cursor-pointer" />
-            <div className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]">
-              <span
-                className="text-sm font-medium text-white"
-                onClick={() => {
-                  resetClouds();
-                  navigate('/');
-                }}
-              >
-                로그아웃
-              </span>
+            <div
+              className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]"
+              onClick={() => {
+                setIsLogout(true);
+              }}
+            >
+              <span className="text-sm font-medium text-white">로그아웃</span>
             </div>
           </div>
         </div>
@@ -81,6 +83,33 @@ const Layout = () => {
               <div className="m-auto flex items-center justify-center pr-6">
                 <span className="text-center font-semibold ">카카오 로그인</span>
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+      {logout && (
+        <Modal isOpen={logout} onRequestClose={() => setIsLogout(false)} style={customStyles}>
+          <div className="flex flex-col">
+            <span className="my-5 text-center text-xl font-medium">
+              정말 이대로 로그아웃 하시겠어요?
+            </span>
+            <div className="flex items-center gap-3">
+              <button
+                className=" h-14 w-40  rounded-md bg-[#CBD5E0] text-white hover:bg-[#718096]"
+                onClick={() => {
+                  resetClouds();
+                  navigate('/');
+                  setIsLogout(false);
+                }}
+              >
+                로그아웃 할래요
+              </button>
+              <button
+                className=" h-14 w-40  rounded-md bg-[#5DBCFF] text-white hover:bg-[#0096FF]"
+                onClick={() => setIsLogout(false)}
+              >
+                안할래요
+              </button>
             </div>
           </div>
         </Modal>
