@@ -16,12 +16,20 @@ const Layout = () => {
           <div className="flex justify-between">
             <img src={back} className="h-8 w-8 cursor-pointer" onClick={() => navigate(-1)} />
           </div>
-          <span className="ml-10 text-lg font-bold leading-[35px] text-[#4A5568]">작성하기</span>
+          <span className="ml-10 text-lg font-bold leading-[35px] text-[#4A5568]">
+            {pathname === '/chat' ? '작성하기' : '구름 선택'}
+          </span>
 
           <div className="flex justify-end">
             <img src={offAlert} className="mr-2 h-8 w-8 cursor-pointer" />
             <div className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]">
-              <span className="text-sm font-medium text-white" onClick={resetClouds}>
+              <span
+                className="text-sm font-medium text-white"
+                onClick={() => {
+                  resetClouds();
+                  navigate('/');
+                }}
+              >
                 로그아웃
               </span>
             </div>
