@@ -10,8 +10,14 @@ import Chatcloud8 from './images/clouds8.png';
 import Chatcloud9 from './images/clouds9.png';
 import useCloudStore from '@/store/chat/chat';
 
+import airplane from '/src/images/airplane.png';
+import record from '/src/images/record.png';
+import smallCloud from '/src/images/smallCloud.png';
+import { useNavigate } from 'react-router-dom';
+
 function ChatPage() {
   const [data, setData] = useState('');
+  const navigator = useNavigate();
   const [clouds, addCloud] = useCloudStore((state) => [state.clouds, state.addCloud]);
   const [isComposing, setIsComposing] = useState(false);
   const [leftPosition, setLeftPosition] = useState('0%');
@@ -20,7 +26,7 @@ function ChatPage() {
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setData(e.target.value);
   };
-
+  const resetClouds = useCloudStore((state) => state.resetClouds);
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'; // 높이를 auto로 설정하여 먼저 크기를 축소합니다.
@@ -40,27 +46,85 @@ function ChatPage() {
         check: false,
       };
       addCloud(newCloud);
-      setData(''); // 입력 필드 초기화
+      setData('');
     }
   };
 
-  console.log(clouds);
+  const onClickEvent = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    event.preventDefault();
+    if (data === '') return;
+    const newCloud = {
+      text: data,
+      leftPosition: leftPosition,
+      randomIdx: imgIdx,
+      check: false,
+    };
+    addCloud(newCloud);
+    setData('');
+  };
+
   return (
     <>
-      <div className="absolute top-[88%] z-30 ml-3 w-full max-w-[460px]">
-        <div className="flex w-full max-w-[435px] items-center gap-1 rounded border border-solid bg-white px-4 py-3">
+      <div className="absolute top-[90%] z-30 ml-3 w-full max-w-[460px]">
+        <div className=" flex w-full max-w-[435px] items-center gap-1 rounded border border-solid bg-white px-4 py-3">
           <textarea
             value={data}
             ref={textareaRef}
             onChange={onChange}
             placeholder="궁시렁 궁시렁 입력하기"
-            className="over:outline-dashed w-full resize-none overflow-hidden outline-none"
+            maxLength={100}
+            className="over:outline-dashed h-8 w-full resize-none overflow-hidden outline-none"
             onKeyDown={handleKeyPress}
             onCompositionStart={() => setIsComposing(true)}
             onCompositionEnd={() => setIsComposing(false)}
           />
+          <div
+            className="flex h-7  w-8 cursor-pointer items-center justify-center rounded-lg bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
+            onClick={onClickEvent}
+          >
+            <img src={smallCloud} className="h-4 w-4" />
+          </div>
         </div>
       </div>
+      {clouds.length !== 0 && (
+        <div className=" absolute top-[80%] z-50 flex w-full max-w-[460px] justify-center gap-3 ">
+          <div className="group">
+            <div
+              className=" flex h-14 w-52 cursor-pointer items-center justify-center rounded-md bg-[#A0AEC0] text-white hover:bg-[#718096]"
+              onClick={resetClouds}
+            >
+              <img src={airplane} className="mr-2 h-6 w-6" />
+              <span>구름 날려버리기</span>
+            </div>
+            <div className="absolute bottom-[35px] mb-6 origin-bottom transform rounded text-white opacity-0 transition-all duration-500  group-hover:opacity-100 group-hover:[transform:perspective(0px)_translateZ(0)_rotateX(0deg)]">
+              <div className="flex max-w-xs flex-col items-center">
+                <div className="rounded bg-[#718096] p-2 text-left text-xs shadow-lg">
+                  훌훌 날려보내세요. <br /> 어디에도 기록이 남지 않아요!!
+                </div>
+                <div className="h-1 w-2 bg-[#718096] " />
+              </div>
+            </div>
+          </div>
+          <div className="group">
+            <div
+              className=" flex h-14 w-52 cursor-pointer items-center justify-center rounded-md bg-[#A0AEC0] text-white hover:bg-[#718096]"
+              onClick={() => navigator('/chatcollection')}
+            >
+              <img src={record} className="mr-2 h-6 w-6" />
+              <span>구름 아카이브</span>
+            </div>
+            <div className="absolute bottom-[35px] mb-6 origin-bottom transform rounded text-white opacity-0 transition-all duration-500  group-hover:opacity-100 group-hover:[transform:perspective(0px)_translateZ(0)_rotateX(0deg)]">
+              <div className="flex max-w-xs flex-col items-center">
+                <div className="rounded bg-[#718096] p-2 text-left text-xs shadow-lg ">
+                  구름을 원하는 곳에 저장해두세요. <br /> 그 장소에 갈 때마다 알려드려요.
+                </div>
+                <div className="h-1 w-2 bg-[#718096] " />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="relative h-24 w-full max-w-[460px]">
         {clouds.length === 0 ? (
           <div className="flex h-[600px] items-center justify-center text-xl font-bold text-[#CBD5E0]">

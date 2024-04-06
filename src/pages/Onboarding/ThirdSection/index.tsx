@@ -1,7 +1,9 @@
 import threeStep from '/src/images/threeStep.png';
 import threeBanner from '/src/images/threeBanner.png';
+import { useNavigate } from 'react-router-dom';
 
 const ThirdSection = () => {
+  const navigator = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center px-5">
       <img src={threeStep} className="w-[400px] py-6" />
@@ -13,7 +15,10 @@ const ThirdSection = () => {
         </span>
       </div>
       <img src={threeBanner} className=" mb-8 h-[570px] w-[400px]" />
-      <button className=" h-14 w-[400px] bg-[#3BA8F4] text-white hover:bg-[#0096FF]">
+      <button
+        className="h-14 w-[400px] bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
+        onClick={() => navigator('/')}
+      >
         다음으로
       </button>
     </div>
