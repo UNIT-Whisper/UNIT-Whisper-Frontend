@@ -1,22 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import Chatcloud1 from './images/clouds1.png';
-import Chatcloud2 from './images/clouds2.png';
-import Chatcloud3 from './images/clouds3.png';
-import Chatcloud4 from './images/clouds4.png';
-import Chatcloud5 from './images/clouds5.png';
-import Chatcloud6 from './images/clouds6.png';
-import Chatcloud7 from './images/clouds7.png';
-import Chatcloud8 from './images/clouds8.png';
-import Chatcloud9 from './images/clouds9.png';
+import { useEffect, useRef, useState } from "react";
+import Chatcloud1 from "./images/clouds1.png";
+import Chatcloud2 from "./images/clouds2.png";
+import Chatcloud3 from "./images/clouds3.png";
+import Chatcloud4 from "./images/clouds4.png";
+import Chatcloud5 from "./images/clouds5.png";
+import Chatcloud6 from "./images/clouds6.png";
+import Chatcloud7 from "./images/clouds7.png";
+import Chatcloud8 from "./images/clouds8.png";
+import Chatcloud9 from "./images/clouds9.png";
+import useCloudStore from "@/store/chat/chat";
 
-type cloudType = {
-  text: string;
-  leftPosition: string;
-  randomIdx: number;
-};
 function ChatPage() {
-  const [data, setData] = useState('');
-  const [cloud, setCloud] = useState<Array<cloudType>>([]);
+  const [data, setData] = useState("");
+  const clouds = useCloudStore((state) => state.getClouds());
+  const addCloud = useCloudStore((state) => state.addCloud);
+  const resetCloud = useCloudStore((state)=>state.resetClouds);
   const [isComposing, setIsComposing] = useState(false);
   const [leftPosition, setLeftPosition] = useState('0%');
   const [imgIdx, setImgIdx] = useState(0);
@@ -24,6 +22,9 @@ function ChatPage() {
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setData(e.target.value);
   };
+  useEffect(()=>{
+    resetCloud;
+  },[])
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'; // 높이를 auto로 설정하여 먼저 크기를 축소합니다.
@@ -36,15 +37,16 @@ function ChatPage() {
     if (isComposing) return;
     if (event.key === 'Enter') {
       event.preventDefault();
-      setCloud([
-        ...cloud,
-        {
-          text: data,
-          leftPosition: leftPosition,
-          randomIdx: imgIdx,
-        },
-      ]);
-      setData(''); // 입력 필드 초기화
+      const newCloud =  {
+        text : data,
+        leftPosition : leftPosition,
+        randomIdx : imgIdx,
+        check : false,
+      }
+      console.log(newCloud);
+      addCloud(newCloud);
+      console.log(clouds);
+      setData(""); // 입력 필드 초기화
     }
   };
   return (
