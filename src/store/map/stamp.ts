@@ -1,11 +1,12 @@
 import { create } from "zustand";
 
 export type stampType = {
-    lat : number,
-    lon: number,
-    date : Date,
-    content : Array<string>,
+    whisperId : number,
+    content : string,
+    latitude : number,
+    longitude: number,
     address : string,
+    createDate : Date,
   }
 
 
@@ -16,11 +17,12 @@ export type stampType = {
 
   const useStampstore = create<stampState>((set) => ({
     stamp: {
-        lat : 0,
-        lon : 0,
-        date : new Date(),
-        content : [],
-        address : "",
+      whisperId : 0,
+      content : "",
+      latitude : 0,
+      longitude: 0,
+      address : "",
+      createDate : new Date(),
     }, // 초기 상태(지금 당장은 이렇게)
     setStamp: (newStamp) =>
       set(() => ({

@@ -13,40 +13,15 @@ declare global {
     }
   }
 
-  type MarkerInfoProp = {
-    lat : number,
-    lon : number,
-    content : Array<string>,
-    date : Date,
-    address : string,
-  }
 
-  const MarkerInfo : Array<MarkerInfoProp> = [
-    {lat: 37.547282739995964, lon: 127.06659525293044, content : [
-        "안녕", "하이"
-    ],
-date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
-    {lat: 37.54567075457188, lon: 127.06515670523791, content : [
-        "안녕", "하이", "만나서"
-    ],
-    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
-    {lat: 37.54457049768203, lon: 127.06701152072206 , content : [
-        "안녕", "하이", "악담"
-    ],
-    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
-    {lat: 37.547598261308345, lon: 127.0662899976558 , content : [
-        "안녕", "하이", "어떻게"
-    ],
-    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
-    {lat: 37.54689601243545, lon: 127.06533882833946, content : [
-        "안녕", "하이"
-    ],
-    date : new Date(), address : "서울특별시 성동구 아차산로 17길 48"},
+  const MarkerInfo : Array<stampType> = [
+    {latitude: 37.547282739995964, longitude: 127.06659525293044, content : 
+        "안녕",
+createDate : new Date(), address : "서울특별시 성동구 아차산로 17길 48", whisperId : 1},
   ]
 
 const StampPage = () => {
-    // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
-    const [myposition, setmyPosition] = usePositionstore((state) => [state.position, state.setPosition]);
+    const [myposition] = usePositionstore((state) => [state.position]);
     const [stamp,  setStamp] = useStampstore((state)=>[state.stamp, state.setStamp]);
     const [open, setOpen] = useState(false);
     useEffect(() => {
@@ -61,34 +36,16 @@ const StampPage = () => {
             window.kakao.maps.load(() => {
               const container = document.getElementById("map");
               const options = {
+                // 여기에 알람이 간 위도 경도를 보내주시면 됩니다.
                 center: new window.kakao.maps.LatLng(myposition.lat, myposition.lon),
                 level: 3,
               };
               const map = new window.kakao.maps.Map(container, options);
-              if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const IocPosition = new window.kakao.maps.LatLng(lat, lon);
-
-                    setmyPosition({
-                        lat : lat,
-                        lon : lon,
-                    })
-
-                    // 지도 중심을 사용자의 현재 위치로
-                    map.setCenter(IocPosition);
-                },(error) => {
-                    console.log(error);
-                });
-              }else{
-                alert("에러 발생")
-              }
               MarkerInfo.forEach((info)=>{
                 const imageSrc = cloudMarker, 
                 imageSize = new window.kakao.maps.Size(69, 48); // 마커 이미지의 크기
                 const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
-                const markerPosition = new window.kakao.maps.LatLng(info.lat, info.lon);
+                const markerPosition = new window.kakao.maps.LatLng(info.latitude, info.longitude);
                 const marker = new window.kakao.maps.Marker({
                     position : markerPosition,
                     image: markerImage
@@ -98,9 +55,10 @@ const StampPage = () => {
 
                 window.kakao.maps.event.addListener(marker, 'click',()=>{
                     setStamp({
-                        lat : info.lat,
-                        lon : info.lon,
-                        date : info.date,
+                        whisperId : info.whisperId,
+                        latitude : info.latitude,
+                        longitude : info.longitude,
+                        createDate : info.createDate,
                         content : info.content,
                         address : info.address,
                     });
@@ -150,11 +108,11 @@ const MarkInfo = ({info} : {info : stampType}) => {
         <div className='flex gap-[9px]'>
             <InfoBtn>
                 <Calendar />
-                <div>{dayjs(info.date).format("YYYY.MM.DD")}</div>
+                <div>{dayjs(info.createDate).format("YYYY.MM.DD")}</div>
             </InfoBtn>
             <InfoBtn>
                 <Time />
-                <div>{dayjs(info.date).format('hh:mm')}</div>
+                <div>{dayjs(info.createDate).format('hh:mm')}</div>
             </InfoBtn>
             <InfoBtn>
                 <Location />
@@ -163,11 +121,7 @@ const MarkInfo = ({info} : {info : stampType}) => {
         </div>
         </div>
         <div className='overflow-y-scroll whitespace-pre-wrap'>
-        {info.content.map((e, i)=>{
-            return(
-    <div key={i} className='mb-1'>{e}</div>
-            )
-        })}
+    <div className='mb-1'>{info.content}</div>
         </div>
       </div>
     )
