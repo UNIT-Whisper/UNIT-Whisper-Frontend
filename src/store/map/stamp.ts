@@ -4,7 +4,8 @@ export type stampType = {
     lat : number,
     lon: number,
     date : Date,
-    content : Array<string>
+    content : Array<string>,
+    address : string,
   }
 
 
@@ -19,6 +20,7 @@ export type stampType = {
         lon : 0,
         date : new Date(),
         content : [],
+        address : "",
     }, // 초기 상태(지금 당장은 이렇게)
     setStamp: (newStamp) =>
       set(() => ({
