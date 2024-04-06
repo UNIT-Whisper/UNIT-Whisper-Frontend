@@ -12,9 +12,9 @@ type positionType = {
 
   const usePositionstore = create<positionState>((set) => ({
     position: {
-        lat : 0,
-        lon : 0,
-    }, // 초기 상태
+        lat : 37.54628231137026,
+        lon : 127.06716016035485,
+    }, // 초기 상태(지금 당장은 이렇게)
     setPosition: (newPosition) =>
       set(() => ({
         position : newPosition

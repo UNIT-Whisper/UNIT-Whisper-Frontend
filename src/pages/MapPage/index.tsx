@@ -1,5 +1,7 @@
 import usePositionstore from '@/store/map/position';
-import  {  useEffect  } from 'react'
+import  {  useEffect, useState  } from 'react'
+import MapBtnWrapper from '@/images/mapBtnWrapper.png';
+import cloudBtn from '@/images/marker.png';
 
 declare global {
     interface Window {
@@ -8,8 +10,9 @@ declare global {
   }
 
 const MapPage = () => {
+    const [click, setClick] = useState(0);
     // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
-    const [myposition,setPosition] = usePositionstore((state) => [state.position, state.setPosition]);
+    const [myposition,setmyPosition] = usePositionstore((state) => [state.position, state.setPosition]);
     useEffect(() => {
         const mapScript = document.createElement("script");
     
@@ -22,7 +25,7 @@ const MapPage = () => {
             window.kakao.maps.load(() => {
               const container = document.getElementById("map");
               const options = {
-                center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+                center: new window.kakao.maps.LatLng(myposition.lat, myposition.lon),
                 level: 3,
               };
               const map = new window.kakao.maps.Map(container, options);
@@ -35,7 +38,7 @@ const MapPage = () => {
                     const marker = new window.kakao.maps.Marker({
                         position : IocPosition
                     });
-                    setPosition({
+                    setmyPosition({
                         lat : lat,
                         lon : lon,
                     })
@@ -46,9 +49,10 @@ const MapPage = () => {
                     window.kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
                         const latlng = mouseEvent.latLng; 
                         marker.setPosition(latlng);
-                        setPosition({
-                            lat : latlng.Ma,
-                            lon : latlng.La,
+                        setClick(click+1);
+                        setmyPosition({
+                            lat : latlng.getLat(),
+                            lon : latlng.getLng(),
                         })
                       });
                 },(error) => {
@@ -66,10 +70,34 @@ const MapPage = () => {
         }, []);
         
       return (
-        <div
+        <div className='relative w-full h-full'>
+                <div
           id="map"
           className='w-full h-full'
         ></div>
+        <div
+        style={{
+            backgroundImage : `url(${MapBtnWrapper})`,
+            backgroundSize: 'contain', 
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }}
+        className='absolute bottom-0 w-full max-w-[500px] h-[329px] z-10 flex flex-col justify-center items-center'
+        >
+            <img src={cloudBtn} alt='구름 버튼' className='h-[115px] w-[164px] absolute left-[35%] top-[5%]'/>
+            <div
+  className="text-center text-[28px] font-bold text-[#2D3748] font-Jalnan mt-8 mb-2"
+  >
+    속삭임
+  </div>
+  <button className='p-3 inline-flex gap-1 justify-center items-center rounded text-white font-Pretendard font-semibold'
+    style={{
+        backgroundColor : click != 0 ? '#0096FF': '#A0AEC0'
+    }}
+    disabled={click != 0 ? false : true}
+  >원하는 지역에 던지기</button>
+        </div>
+        </div>
       );
 
 }
