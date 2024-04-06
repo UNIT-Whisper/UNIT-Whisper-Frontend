@@ -91,14 +91,26 @@ const Layout = () => {
               className="mr-2 h-8 w-8 cursor-pointer"
               onClick={() => setTooltip(true)}
             />
-            <div
-              className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]"
-              onClick={() => {
-                setIsLogout(true);
-              }}
-            >
-              <span className="text-sm font-medium text-white">로그아웃</span>
-            </div>
+            {sessionStorage.getItem('accessToken') === null ? (
+              <div
+                className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
+                <img src={kakaoLogin} className="h-3 w-3 " />
+                <span className="pl-1">로그인</span>
+              </div>
+            ) : (
+              <div
+                className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]"
+                onClick={() => {
+                  setIsLogout(true);
+                }}
+              >
+                <span className="text-sm font-medium text-white">로그아웃</span>
+              </div>
+            )}
           </div>
         </div>
       ) : (
