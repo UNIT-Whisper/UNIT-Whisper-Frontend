@@ -19,15 +19,43 @@ import checkCloud8 from './img/checkClouds8.png';
 import checkCloud9 from './img/checkClouds9.png';
 import { useState } from 'react';
 import useCheckCloudStore from '@/store/chat/chatCollect';
+import { usePopStore } from '@/store/popup';
+
+import close from '/src/images/closeBlue.png';
+import warning from '/src/images/warning.png';
 
 function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);
+  const [closePop, setClosePop] = useState(true);
+  const [setIsOpen] = usePopStore((state) => [state.setIsOpen]);
   return (
-    <div className="relative h-[830px] w-full overflow-x-hidden overflow-y-scroll">
-      {clouds.map((el, index) => (
-        <Cloud key={index} index={index} text={el.text} randomIdx={el.randomIdx} />
-      ))}
-    </div>
+    <>
+      <div
+        className={`relative h-[${!closePop ? '700px' : '650px'}] max-h-[${!closePop ? '700px' : '650px'}] w-full overflow-x-hidden overflow-y-scroll`}
+      >
+        {clouds.map((el, index) => (
+          <Cloud key={index} index={index} text={el.text} randomIdx={el.randomIdx} />
+        ))}
+      </div>
+      {closePop && (
+        <div className="my-5 ml-8 flex h-14 w-[400px] cursor-pointer items-center justify-between rounded-md bg-[#DFF2FF] text-[#0096FF]">
+          <div className="ml-4 flex items-center">
+            <img src={warning} className="mr-4 h-6 w-6 " />
+            <span> 던지고 싶은 구름을 선택해주세요!</span>
+          </div>
+          <div>
+            <img src={close} className="mr-4 h-4 w-4 " onClick={() => setClosePop(false)} />
+          </div>
+        </div>
+      )}
+
+      <button
+        className={`${!closePop && 'my-5'} ml-8 h-14 w-[400px] rounded-md bg-[#3BA8F4] text-white hover:bg-[#0096FF]`}
+        onClick={() => setIsOpen(true)}
+      >
+        선택완료
+      </button>
+    </>
   );
 }
 
@@ -63,7 +91,7 @@ const Cloud = (prop: cloudProp) => {
   const ChatCloudImg = chatCloudImages[prop.randomIdx];
   const CheckChatCloudImg = chatClickCloudImages[prop.randomIdx];
   const height = 96 * prop.index;
-  const [check, setCheck] = useState(false);
+  const [check, setCheck] = useState(true);
   const [addCloud, removeCloud] = useCheckCloudStore((state) => [
     state.addCloud,
     state.removeCloud,
@@ -99,10 +127,10 @@ const Cloud = (prop: cloudProp) => {
       }}
     >
       <div
-        className={`${!check ? 'text-black ' : 'text-[#999999]'} m-auto w-40 cursor-pointer text-center font-Jalnan text-base font-bold text-[##4A5568]`}
+        className={`${!check ? 'text-black ' : 'text-[#999999]'} m-auto w-40 cursor-pointer text-center font-Jalnan text-base font-bold leading-4 text-[##4A5568]`}
         onClick={() => onClick(check, prop.text, prop.index)}
       >
-        {prop.text}
+        {prop.text.length > 30 ? `${prop.text.slice(0, 30)}...` : prop.text}
       </div>
     </div>
   );

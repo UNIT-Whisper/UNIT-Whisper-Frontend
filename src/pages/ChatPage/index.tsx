@@ -72,7 +72,7 @@ function ChatPage() {
             ref={textareaRef}
             onChange={onChange}
             placeholder="궁시렁 궁시렁 입력하기"
-            maxLength={140}
+            maxLength={100}
             className="over:outline-dashed h-8 w-full resize-none overflow-hidden outline-none"
             onKeyDown={handleKeyPress}
             onCompositionStart={() => setIsComposing(true)}
