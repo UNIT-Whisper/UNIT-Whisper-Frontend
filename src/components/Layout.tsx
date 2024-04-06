@@ -40,18 +40,26 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    if (code) {
-      axios
-        .post('http://54.180.66.230/user/login', {
-          authCode: code,
-          redirectUri: 'http://localhost:3000/auth/callback/kakao',
-        })
-        .then((r) => {
-          r.data === 0 && sessionStorage.setItem('token', r.data.accessToken);
-          navigate('/');
-        });
-    }
-  }, []);
+    const fetchData = async () => {
+      if (code) {
+        try {
+          const response = await axios.post('http://54.180.66.230/user/login', {
+            authCode: code,
+            redirectUri: 'http://localhost:3000/auth/callback/kakao',
+          });
+
+          if (response.data.code === 0) {
+            navigate('/');
+            //sessionStorage.setItem('token', response.data.accessToken);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [code]);
 
   return (
     <div className="m-auto h-screen w-full max-w-[500px] bg-main bg-cover px-5">
@@ -78,15 +86,26 @@ const Layout = () => {
         </div>
       ) : (
         <div className=" flex h-16 w-full items-center justify-end border-b-[1px] bg-white py-[14px] pl-5">
-          <div
-            className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
-            onClick={() => {
-              setIsOpen(true);
-            }}
-          >
-            <img src={kakaoLogin} className="h-3 w-3 " />
-            <span className="pl-1">로그인</span>
-          </div>
+          {sessionStorage.getItem('accessToken') === null ? (
+            <div
+              className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            >
+              <img src={kakaoLogin} className="h-3 w-3 " />
+              <span className="pl-1">로그인</span>
+            </div>
+          ) : (
+            <div
+              className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]"
+              onClick={() => {
+                setIsLogout(true);
+              }}
+            >
+              <span className="text-sm font-medium text-white">로그아웃</span>
+            </div>
+          )}
         </div>
       )}
       {open && (
@@ -112,6 +131,10 @@ const Layout = () => {
               className="flex h-[60px] cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
               onClick={() => {
                 loginHandler();
+                sessionStorage.setItem(
+                  'accessToken',
+                  'eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNzEyNDM0MDYwLCJzdWIiOiI0IiwidHlwZSI6IkFDQ0VTU19UT0tFTiIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzEyNTIwNDYwfQ.Lr07UOmCUa65PQbmkFLptiCoF7f5eLvTxnqNx606NlfbQGc8y9uzJgAWdBmGZAiu'
+                );
               }}
             >
               <img src={kakaoLogin} className="ml-3 h-6 w-6" />
@@ -134,6 +157,7 @@ const Layout = () => {
                 onClick={() => {
                   resetClouds();
                   navigate('/');
+                  sessionStorage.removeItem('accessToken');
                   setIsLogout(false);
                 }}
               >

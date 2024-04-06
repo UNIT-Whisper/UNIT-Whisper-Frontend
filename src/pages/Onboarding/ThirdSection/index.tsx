@@ -17,7 +17,9 @@ const ThirdSection = () => {
       <img src={threeBanner} className=" mb-8 h-[570px] w-[400px]" />
       <button
         className="h-14 w-[400px] bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
-        onClick={() => navigator('/')}
+        onClick={() => {
+          navigator('/');
+        }}
       >
         다음으로
       </button>
