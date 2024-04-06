@@ -28,6 +28,10 @@ const router = createBrowserRouter([
         path: 'chatCollection',
         element: <ChatCollectionPage />,
       },
+      {
+        path: 'auth/callback/kakao',
+        element: <HomePage />,
+      },
     ],
   },
   {
@@ -49,19 +53,19 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path : '/',
-    element : <MapLayout />,
-    children : [
+    path: '/',
+    element: <MapLayout />,
+    children: [
       {
-        path : 'mapMarker',
-        element : <MapPage />
+        path: 'mapMarker',
+        element: <MapPage />,
       },
       {
-        path : 'mapStamp',
-        element : <StampPage />
-      }
-    ]
-  }
+        path: 'mapStamp',
+        element: <StampPage />,
+      },
+    ],
+  },
 ]);
 
 export default router;

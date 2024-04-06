@@ -28,7 +28,6 @@ function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);
   const [closePop, setClosePop] = useState(true);
   const [setIsOpen] = usePopStore((state) => [state.setIsOpen]);
-  console.log(closePop);
   return (
     <>
       <div

@@ -8,9 +8,12 @@ import offAlert from '/src/images/offAlert.png';
 import useCloudStore from '@/store/chat/chat';
 import { usePopStore } from '@/store/popup';
 import Modal from 'react-modal';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 const Layout = () => {
   const navigate = useNavigate();
+  const link = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=code`;
   const { pathname } = useLocation();
   const resetClouds = useCloudStore((state) => state.resetClouds);
   const [open, logout, setIsLogout, setIsOpen] = usePopStore((state) => [
@@ -29,6 +32,26 @@ const Layout = () => {
       transform: 'translate(-50%, -50%)',
     },
   };
+
+  const code = new URL(document.location.toString()).searchParams.get('code');
+
+  const loginHandler = () => {
+    window.location.href = link;
+  };
+
+  useEffect(() => {
+    if (code) {
+      axios
+        .post('http://54.180.66.230/user/login', {
+          authCode: code,
+          redirectUri: 'http://localhost:3000/auth/callback/kakao',
+        })
+        .then((r) => {
+          r.data === 0 && sessionStorage.setItem('token', r.data.accessToken);
+          navigate('/');
+        });
+    }
+  }, []);
 
   return (
     <div className="m-auto h-screen w-full max-w-[500px] bg-main bg-cover px-5">
@@ -57,7 +80,9 @@ const Layout = () => {
         <div className=" flex h-16 w-full items-center justify-end border-b-[1px] bg-white py-[14px] pl-5">
           <div
             className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setIsOpen(true);
+            }}
           >
             <img src={kakaoLogin} className="h-3 w-3 " />
             <span className="pl-1">로그인</span>
@@ -65,7 +90,12 @@ const Layout = () => {
         </div>
       )}
       {open && (
-        <Modal isOpen={open} onRequestClose={() => setIsOpen(false)} style={customStyles}>
+        <Modal
+          ariaHideApp={false}
+          isOpen={open}
+          onRequestClose={() => setIsOpen(false)}
+          style={customStyles}
+        >
           <div className="flex-col">
             <div dir="rtl" className="h-8">
               <img
@@ -78,7 +108,12 @@ const Layout = () => {
             <div className="mb-3 flex items-center justify-center ">
               <img src={loginModal} className="h-10 w-32 " />
             </div>
-            <div className="flex h-[60px] cursor-pointer items-center   rounded bg-[#FEE500] px-2 py-1 text-black">
+            <div
+              className="flex h-[60px] cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
+              onClick={() => {
+                loginHandler();
+              }}
+            >
               <img src={kakaoLogin} className="ml-3 h-6 w-6" />
               <div className="m-auto flex items-center justify-center pr-6">
                 <span className="text-center font-semibold ">카카오 로그인</span>
