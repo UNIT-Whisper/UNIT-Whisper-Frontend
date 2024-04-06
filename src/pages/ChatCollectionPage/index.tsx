@@ -26,7 +26,7 @@ import warning from '/src/images/warning.png';
 
 function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
   const [closePop, setClosePop] = useState(true);
   const [setIsOpen] = usePopStore((state) => [state.setIsOpen]);
   return (
@@ -52,10 +52,12 @@ function ChatCollectionPage() {
 
       <button
         className={`${!closePop && 'my-5'} ml-8 h-14 w-[400px] rounded-md bg-[#3BA8F4] text-white hover:bg-[#0096FF]`}
-        onClick={() =>
+        onClick={() =>{
           sessionStorage.getItem('accessToken') === null
-            ? setIsOpen(true)
-            : '여기서 선택하면 댑니다'
+          ? setIsOpen(true)
+          : '여기서 선택하면 댑니다';
+          navigator("/mapMarker",{replace : true});
+        }
         }
       >
         선택완료
