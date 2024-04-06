@@ -23,7 +23,6 @@ import { usePopStore } from '@/store/popup';
 
 import close from '/src/images/closeBlue.png';
 import warning from '/src/images/warning.png';
-import { useNavigate } from 'react-router-dom';
 
 function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);

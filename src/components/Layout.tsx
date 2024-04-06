@@ -64,7 +64,6 @@ const Layout = () => {
 
           if (response.data.code === 0) {
             navigate('/');
-            //sessionStorage.setItem('token', response.data.accessToken);
           }
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -149,10 +148,7 @@ const Layout = () => {
               className="flex h-[60px] cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
               onClick={() => {
                 loginHandler();
-                sessionStorage.setItem(
-                  'accessToken',
-                  'eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNzEyNDM0MDYwLCJzdWIiOiI0IiwidHlwZSI6IkFDQ0VTU19UT0tFTiIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzEyNTIwNDYwfQ.Lr07UOmCUa65PQbmkFLptiCoF7f5eLvTxnqNx606NlfbQGc8y9uzJgAWdBmGZAiu'
-                );
+                sessionStorage.setItem('accessToken', import.meta.env.VITE_ACCESS_TOKEN);
               }}
             >
               <img src={kakaoLogin} className="ml-3 h-6 w-6" />
