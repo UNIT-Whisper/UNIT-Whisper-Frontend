@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import Calendar from '@/svg/calendar.svg?react';
 import Time from '@/svg/time.svg?react';
 import Location from '@/svg/location.svg?react';
+import { axiosInstance } from '@/apis/sendCloud';
 
 declare global {
     interface Window {
@@ -54,6 +55,23 @@ const StampPage = () => {
 
 
                 window.kakao.maps.event.addListener(marker, 'click',()=>{
+                    // axiosInstance.get(`/whisper/${whisperId}`,{
+                    //     headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken') as string}` },
+                    //   }).then(
+                    //     response => {
+                    //         setStamp({
+                    //             whisperId : response.data.whisperId,
+                    //             latitude : response.data.latitude,
+                    //             longitude : response.data.longitude,
+                    //             createDate : response.data.createDate,
+                    //             content : response.data.content,
+                    //             address : response.data.address,
+                    //         });
+                    //         setOpen(true);
+                    //     }
+                    //   ).catch(
+                    //     error => console.log(error),
+                    //   )
                     setStamp({
                         whisperId : info.whisperId,
                         latitude : info.latitude,

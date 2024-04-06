@@ -20,9 +20,9 @@ import checkCloud9 from './img/checkClouds9.png';
 import { useState } from 'react';
 import useCheckCloudStore from '@/store/chat/chatCollect';
 import { usePopStore } from '@/store/popup';
-
 import close from '/src/images/closeBlue.png';
 import warning from '/src/images/warning.png';
+import { useNavigate } from 'react-router-dom';
 
 function ChatCollectionPage() {
   const clouds = useCloudStore((state) => state.clouds);
