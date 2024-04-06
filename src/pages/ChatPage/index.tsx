@@ -65,7 +65,7 @@ function ChatPage() {
 
   return (
     <>
-      <div className="absolute top-[90%] z-30 ml-3 w-full max-w-[460px]">
+      <div className="absolute top-[85%] z-30 ml-3 w-full max-w-[460px]">
         <div className=" flex w-full max-w-[435px] items-center gap-1 rounded border border-solid bg-white px-4 py-3">
           <textarea
             value={data}
@@ -79,15 +79,19 @@ function ChatPage() {
             onCompositionEnd={() => setIsComposing(false)}
           />
           <div
-            className="flex h-7  w-8 cursor-pointer items-center justify-center rounded-lg bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
+            className="flex h-7 w-8 cursor-pointer items-center justify-center rounded-lg bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
             onClick={onClickEvent}
           >
             <img src={smallCloud} className="h-4 w-4" />
           </div>
         </div>
+        <div className="mt-2 flex pl-1">
+          <span className="text-[#718096]">{data.length}</span>
+          <span className="text-[#A0AEC0]">/100</span>
+        </div>
       </div>
       {clouds.length !== 0 && (
-        <div className=" absolute top-[80%] z-50 flex w-full max-w-[460px] justify-center gap-3 ">
+        <div className=" absolute top-[77%] z-50 flex w-full max-w-[460px] justify-center gap-3 ">
           <div className="group">
             <div
               className=" flex h-14 w-52 cursor-pointer items-center justify-center rounded-md bg-[#A0AEC0] text-white hover:bg-[#718096]"
