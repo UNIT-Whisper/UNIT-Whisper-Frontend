@@ -24,13 +24,12 @@ function HomePage() {
     window.location.href = kakaoURL;
   };
   return (
-    <div>
-      Home
+    <div className="pl-5">
       <button onClick={handleLogin}>카카오 로그인</button>
       <button onClick={() => setIsOpen(true)}>팝업 날리기</button>
       {open && (
         <Modal isOpen={open} onRequestClose={() => setIsOpen(false)} style={customStyles}>
-          <div className="flex-col ">
+          <div className="flex-col">
             <div dir="rtl" className="h-8">
               <img
                 src={Close}
