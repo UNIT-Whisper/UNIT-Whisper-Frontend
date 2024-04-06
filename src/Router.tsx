@@ -3,6 +3,10 @@ import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 import ChatCollectionPage from './pages/ChatCollectionPage';
 import Layout from './components/Layout';
+import FirstSection from './pages/Onboarding/FirstSection';
+import SecondSection from './pages/Onboarding/SecondSection';
+import ThirdSection from './pages/Onboarding/ThirdSection';
+import OnBoardingLayout from './components/OnboardingLayout';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +24,24 @@ const router = createBrowserRouter([
       {
         path: 'chatCollection',
         element: <ChatCollectionPage />,
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <OnBoardingLayout />,
+    children: [
+      {
+        path: 'onboarding1',
+        element: <FirstSection />,
+      },
+      {
+        path: 'onboarding2',
+        element: <SecondSection />,
+      },
+      {
+        path: 'onboarding3',
+        element: <ThirdSection />,
       },
     ],
   },
