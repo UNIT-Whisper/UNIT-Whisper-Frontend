@@ -43,9 +43,7 @@ function ChatPage() {
         randomIdx : imgIdx,
         check : false,
       }
-      console.log(newCloud);
       addCloud(newCloud);
-      console.log(clouds);
       setData(""); // 입력 필드 초기화
     }
   };
@@ -66,7 +64,7 @@ function ChatPage() {
         </div>
       </div>
       <div className="relative h-24 w-full">
-        {cloud.map((el, index) => (
+        {clouds.map((el, index) => (
           <Cloud key={index} data={el.randomIdx} left={el.leftPosition} index={index} />
         ))}
       </div>
