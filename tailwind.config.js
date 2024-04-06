@@ -6,6 +6,9 @@ export default {
       main: "url('./images/layout.png')",
     },
     extend: {},
+    fontFamily: {
+      Jalnan: ["Jalnan"],
+    },
   },
   plugins: [],
 };
