@@ -1,5 +1,5 @@
 import usePositionstore from '@/store/map/position';
-import  {  useEffect, useState  } from 'react'
+import  {  useEffect, useRef, useState  } from 'react'
 import MapBtnWrapper from '@/images/mapBtnWrapper.png';
 import cloudBtn from '@/images/marker.png';
 
@@ -10,7 +10,9 @@ declare global {
   }
 
 const MapPage = () => {
+    const [map, setMap] = useState(null);
     const [click, setClick] = useState(0);
+    const markerRef = useRef<window.kakao.maps.Marker | null>(null);
     // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
     const [myposition,setmyPosition] = usePositionstore((state) => [state.position, state.setPosition]);
     useEffect(() => {
@@ -28,7 +30,8 @@ const MapPage = () => {
                 center: new window.kakao.maps.LatLng(myposition.lat, myposition.lon),
                 level: 3,
               };
-              const map = new window.kakao.maps.Map(container, options);
+              const mapInstance = new window.kakao.maps.Map(container, options);
+              setMap(mapInstance);
               if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
@@ -42,11 +45,13 @@ const MapPage = () => {
                         lat : lat,
                         lon : lon,
                     })
-                    marker.setMap(map);
+                    marker.setMap(mapInstance);
+                    markerRef.current = marker;
 
                     // 지도 중심을 사용자의 현재 위치로
-                    map.setCenter(IocPosition);
-                    window.kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                    mapInstance.setCenter(IocPosition);
+                    setMap(mapInstance);
+                    window.kakao.maps.event.addListener(mapInstance, 'click', function(mouseEvent) {
                         const latlng = mouseEvent.latLng; 
                         marker.setPosition(latlng);
                         setClick(click+1);
@@ -61,6 +66,7 @@ const MapPage = () => {
               }else{
                 alert("에러 발생")
               }
+
             });
           };
           return () => {
@@ -68,6 +74,18 @@ const MapPage = () => {
             document.head.removeChild(mapScript);
           };
         }, []);
+        // 마커 이미지 바뀌는 로직
+        const handleChangeMarker = () => {
+            if (markerRef.current && map && window.kakao && window.kakao.maps) {
+                const imageSrc = cloudBtn,
+                imageSize = new window.kakao.maps.Size(69, 48);
+                                  
+                const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+                                
+                markerRef.current.setImage(markerImage);
+                window.kakao.maps.event.removeListener(map, 'click');
+                }
+            }
         
       return (
         <div className='relative w-full h-full'>
@@ -95,6 +113,7 @@ const MapPage = () => {
         backgroundColor : click != 0 ? '#0096FF': '#A0AEC0'
     }}
     disabled={click != 0 ? false : true}
+    onClick={handleChangeMarker}
   >원하는 지역에 던지기</button>
         </div>
         </div>
