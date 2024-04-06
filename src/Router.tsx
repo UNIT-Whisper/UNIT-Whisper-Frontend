@@ -14,6 +14,24 @@ import StampPage from './pages/StampPage';
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <OnBoardingLayout />,
+    children: [
+      {
+        path: '/',
+        element: <FirstSection />,
+      },
+      {
+        path: 'onboarding2',
+        element: <SecondSection />,
+      },
+      {
+        path: 'onboarding3',
+        element: <ThirdSection />,
+      },
+    ],
+  },
+  {
+    path: '/whisper',
     element: <Layout />,
     children: [
       {
@@ -31,24 +49,6 @@ const router = createBrowserRouter([
       {
         path: 'auth/callback/kakao',
         element: <HomePage />,
-      },
-    ],
-  },
-  {
-    path: '/',
-    element: <OnBoardingLayout />,
-    children: [
-      {
-        path: 'onboarding1',
-        element: <FirstSection />,
-      },
-      {
-        path: 'onboarding2',
-        element: <SecondSection />,
-      },
-      {
-        path: 'onboarding3',
-        element: <ThirdSection />,
       },
     ],
   },

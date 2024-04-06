@@ -9,12 +9,10 @@ import offAlert from '/src/images/offAlert.png';
 import useCloudStore from '@/store/chat/chat';
 import { usePopStore } from '@/store/popup';
 import Modal from 'react-modal';
-import axios from 'axios';
-import { useEffect } from 'react';
 
 const Layout = () => {
   const navigate = useNavigate();
-  const link = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=code`;
+  //const link = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=code`;
   const { pathname } = useLocation();
   const resetClouds = useCloudStore((state) => state.resetClouds);
   const [open, logout, tooltip, setTooltip, setIsLogout, setIsOpen] = usePopStore((state) => [
@@ -47,32 +45,32 @@ const Layout = () => {
     },
   };
 
-  const code = new URL(document.location.toString()).searchParams.get('code');
+  // const code = new URL(document.location.toString()).searchParams.get('code');
 
-  const loginHandler = () => {
-    window.location.href = link;
-  };
+  // const loginHandler = () => {
+  //   window.location.href = link;
+  // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (code) {
-        try {
-          const response = await axios.post('http://54.180.66.230/user/login', {
-            authCode: code,
-            redirectUri: 'http://localhost:3000/auth/callback/kakao',
-          });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (code) {
+  //       try {
+  //         const response = await axios.post('http://54.180.66.230/user/login', {
+  //           authCode: code,
+  //           redirectUri: 'http://localhost:3000/auth/callback/kakao',
+  //         });
 
-          if (response.data.code === 0) {
-            navigate('/');
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
+  //         if (response.data.code === 0) {
+  //           navigate('/whisper');
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching data:', error);
+  //       }
+  //     }
+  //   };
 
-    fetchData();
-  }, [code]);
+  //   fetchData();
+  // }, [code]);
 
   return (
     <div className="m-auto h-screen w-full max-w-[500px] bg-main bg-cover px-5">
@@ -159,8 +157,10 @@ const Layout = () => {
             <div
               className="flex h-[60px] cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
               onClick={() => {
-                loginHandler();
+                // loginHandler();
                 sessionStorage.setItem('accessToken', import.meta.env.VITE_ACCESS_TOKEN);
+
+                setIsOpen(false);
               }}
             >
               <img src={kakaoLogin} className="ml-3 h-6 w-6" />
@@ -182,7 +182,7 @@ const Layout = () => {
                 className=" h-14 w-40  rounded-md bg-[#CBD5E0] text-white hover:bg-[#718096]"
                 onClick={() => {
                   resetClouds();
-                  navigate('/');
+                  navigate('/whisper');
                   sessionStorage.removeItem('accessToken');
                   setIsLogout(false);
                 }}

@@ -18,7 +18,7 @@ const ThirdSection = () => {
       <button
         className="h-14 w-[400px] bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
         onClick={() => {
-          navigator('/');
+          navigator('/whisper');
         }}
       >
         다음으로

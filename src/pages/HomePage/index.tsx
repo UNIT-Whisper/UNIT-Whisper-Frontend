@@ -16,7 +16,7 @@ function HomePage() {
         </span>
         <div
           className=" mr-5 flex h-16 w-32 cursor-pointer items-center justify-center rounded bg-[#3BA8F4]  text-black hover:bg-[#0096FF]"
-          onClick={() => naviator('/chat')}
+          onClick={() => naviator('./chat')}
         >
           <span className="text-sm font-medium text-white">속삭임 하러가기</span>
         </div>

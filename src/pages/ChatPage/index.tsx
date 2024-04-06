@@ -112,7 +112,7 @@ function ChatPage() {
           <div className="group">
             <div
               className=" flex h-14 w-52 cursor-pointer items-center justify-center rounded-md bg-[#A0AEC0] text-white hover:bg-[#718096]"
-              onClick={() => navigator('/chatcollection')}
+              onClick={() => navigator('../chatcollection')}
             >
               <img src={record} className="mr-2 h-6 w-6" />
               <span>구름 아카이브</span>

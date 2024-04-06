@@ -19,10 +19,6 @@ const SecondSection = () => {
         className=" h-14 w-[400px] bg-[#3BA8F4] text-white hover:bg-[#0096FF]"
         onClick={() => {
           navigate('/onboarding3');
-          sessionStorage.setItem(
-            'accessToken',
-            'eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNzEyNDM0MDYwLCJzdWIiOiI0IiwidHlwZSI6IkFDQ0VTU19UT0tFTiIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzEyNTIwNDYwfQ.Lr07UOmCUa65PQbmkFLptiCoF7f5eLvTxnqNx606NlfbQGc8y9uzJgAWdBmGZAiu'
-          );
         }}
       >
         다음으로
