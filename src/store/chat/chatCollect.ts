@@ -10,6 +10,7 @@ type checkCloud = {
     clouds: checkCloud[];
     addCloud: (newCloud: checkCloud) => void;
     removeCloud : (removeCloud : checkCloud) => void;
+    resetClouds: () => void;
   }
 
   type MyPersist = (
@@ -28,7 +29,11 @@ type checkCloud = {
             removeCloud : (removeCloud : checkCloud) =>
             set({
                 clouds: get().clouds.filter(cloud => cloud.index !== removeCloud.index)
-            })
+            }),
+            resetClouds: () =>
+            set({
+              clouds: [],
+            }),
         }),
         {
             name : "checkCloud-storage",

@@ -2,6 +2,10 @@ import usePositionstore from '@/store/map/position';
 import  {  useEffect, useRef, useState  } from 'react'
 import MapBtnWrapper from '@/images/mapBtnWrapper.png';
 import cloudBtn from '@/images/marker.png';
+import useCheckCloudStore from '@/store/chat/chatCollect';
+import { sendCloud } from '@/apis/sendCloud';
+import { useNavigate } from 'react-router-dom';
+import useCloudStore from '@/store/chat/chat';
 
 declare global {
     interface Window {
@@ -15,6 +19,10 @@ const MapPage = () => {
     const markerRef = useRef<window.kakao.maps.Marker | null>(null);
     // 위치 쓸 것 같긴 한데 지금은 멈춘 상태
     const [myposition,setmyPosition] = usePositionstore((state) => [state.position, state.setPosition]);
+    const [clouds, resetCheckCloud] = useCheckCloudStore((state)=>[state.clouds, state.resetClouds]);
+    const [resetCloud] = useCloudStore((state)=>[state.resetClouds]);
+    const navigate = useNavigate();
+    const text = clouds[0].text;
     useEffect(() => {
         const mapScript = document.createElement("script");
     
@@ -75,16 +83,29 @@ const MapPage = () => {
           };
         }, []);
         // 마커 이미지 바뀌는 로직
-        const handleChangeMarker = () => {
-            if (markerRef.current && map && window.kakao && window.kakao.maps) {
-                const imageSrc = cloudBtn,
-                imageSize = new window.kakao.maps.Size(69, 48);
-                                  
-                const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
-                                
-                markerRef.current.setImage(markerImage);
-                window.kakao.maps.event.removeListener(map, 'click');
-                }
+        const handleChangeMarker = async () => {
+            // 여기다가 axios 연결을 지어야 하고... 
+            const response = await sendCloud(sessionStorage.getItem('accessToken') as string,text,myposition.lat, myposition.lon);
+            if(response.code == 0){
+                if (markerRef.current && map && window.kakao && window.kakao.maps) {
+                    const imageSrc = cloudBtn,
+                    imageSize = new window.kakao.maps.Size(69, 48);
+                                      
+                    const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+                                    
+                    markerRef.current.setImage(markerImage);
+                    window.kakao.maps.event.removeListener(map, 'click');
+                    }
+                alert("구름이 저장되었습니다.");
+                setClick(-999);
+                resetCheckCloud();
+                resetCloud();
+                setTimeout(() => {
+                    navigate("/chat", { replace: true });
+                  }, 2000);
+            }else{
+                alert("에러가 일어났습니다");
+            }
             }
         
       return (
@@ -110,7 +131,7 @@ const MapPage = () => {
   </div>
   <button className='p-3 inline-flex gap-1 justify-center items-center rounded text-white font-Pretendard font-semibold'
     style={{
-        backgroundColor : click != 0 ? '#0096FF': '#A0AEC0'
+        backgroundColor : click > 0 ? '#0096FF': '#A0AEC0'
     }}
     disabled={click != 0 ? false : true}
     onClick={handleChangeMarker}
