@@ -4,6 +4,7 @@ import back from '/src/images/back.png';
 import loginBanner from '/src/images/loginBanner.png';
 import loginModal from '/src/images/loginModal.png';
 import close from '/src/images/close.png';
+import group from '/src/images/group.png';
 import offAlert from '/src/images/offAlert.png';
 import useCloudStore from '@/store/chat/chat';
 import { usePopStore } from '@/store/popup';
@@ -16,9 +17,11 @@ const Layout = () => {
   const link = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=code`;
   const { pathname } = useLocation();
   const resetClouds = useCloudStore((state) => state.resetClouds);
-  const [open, logout, setIsLogout, setIsOpen] = usePopStore((state) => [
+  const [open, logout, tooltip, setTooltip, setIsLogout, setIsOpen] = usePopStore((state) => [
     state.open,
     state.logout,
+    state.tooltip,
+    state.setIsTooltip,
     state.setIsLogout,
     state.setIsOpen,
   ]);
@@ -29,6 +32,17 @@ const Layout = () => {
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };
+
+  const customTooltipStyles = {
+    content: {
+      top: '10%',
+      left: 'auto%',
+      right: '20%',
+      bottom: 'auto',
+      marginLeft: '-20%',
       transform: 'translate(-50%, -50%)',
     },
   };
@@ -73,7 +87,11 @@ const Layout = () => {
           </span>
 
           <div className="flex justify-end">
-            <img src={offAlert} className="mr-2 h-8 w-8 cursor-pointer" />
+            <img
+              src={offAlert}
+              className="mr-2 h-8 w-8 cursor-pointer"
+              onClick={() => setTooltip(true)}
+            />
             <div
               className="mr-5 flex cursor-pointer items-center rounded bg-[#3BA8F4] px-2 py-1 text-black hover:bg-[#0096FF]"
               onClick={() => {
@@ -169,6 +187,36 @@ const Layout = () => {
               >
                 안할래요
               </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+      {tooltip && (
+        <Modal
+          isOpen={tooltip}
+          onRequestClose={() => setTooltip(false)}
+          style={customTooltipStyles}
+        >
+          <div className="flex flex-col">
+            <div className="my-5 flex items-center justify-between">
+              <span>알림</span>
+              <div className="flex h-8 w-20 items-center justify-center rounded-md bg-[#A0AEC0] text-white">
+                모두 읽기
+              </div>
+            </div>
+            <div className="flex justify-center ">
+              <img src={group} className="mr-5 h-6 w-6 cursor-pointer " />
+              <div className="flex flex-col">
+                <span className="leading-6">
+                  근처에 스쳐간 구름이 하나 있어요. <br /> 확인해보시겠어요?
+                </span>
+                <span className="mt-2 text-xs font-normal text-[#718096]">
+                  서울특별시 성동구 아차산로 17길 48
+                </span>
+                <button className="m-auto mt-3  flex rounded-md border-[1px] px-1">
+                  확인 하기
+                </button>
+              </div>
             </div>
           </div>
         </Modal>
