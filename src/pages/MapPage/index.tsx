@@ -112,10 +112,11 @@ const MapPage = () => {
       }
       alert('구름이 저장되었습니다.');
       setClick(-999);
-      resetCheckCloud();
-      resetCloud();
+
       setTimeout(() => {
-        navigate('/chat', { replace: true });
+        navigate('/whisper/chat', { replace: true });
+        resetCheckCloud();
+        resetCloud();
       }, 2000);
     } else {
       alert('에러가 일어났습니다');

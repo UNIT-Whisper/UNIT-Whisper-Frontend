@@ -55,8 +55,7 @@ function ChatCollectionPage() {
         onClick={() => {
           sessionStorage.getItem('accessToken') === null
             ? setIsOpen(true)
-            : '여기서 선택하면 댑니다';
-          navigator('/mapMarker', { replace: true });
+            : navigator('/mapMarker', { replace: true });
         }}
       >
         선택완료
