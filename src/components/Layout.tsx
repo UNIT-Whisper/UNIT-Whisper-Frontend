@@ -38,11 +38,11 @@ const Layout = () => {
 
   const customTooltipStyles = {
     content: {
-      top: '10%',
-      left: 'auto%',
-      right: '20%',
+      top: '20%',
+      left: '75%',
+      right: 'auto%',
       bottom: 'auto',
-      marginLeft: '-20%',
+      marginLeft: '-10%',
       transform: 'translate(-50%, -50%)',
     },
   };
@@ -225,7 +225,13 @@ const Layout = () => {
                 <span className="mt-2 text-xs font-normal text-[#718096]">
                   서울특별시 성동구 아차산로 17길 48
                 </span>
-                <button className="m-auto mt-3  flex rounded-md border-[1px] px-1">
+                <button
+                  className="m-auto mt-3  flex rounded-md border-[1px] px-1"
+                  onClick={() => {
+                    navigate('/mapStamp/12');
+                    setTooltip(false);
+                  }}
+                >
                   확인 하기
                 </button>
               </div>
