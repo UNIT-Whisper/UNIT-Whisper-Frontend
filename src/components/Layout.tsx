@@ -9,6 +9,8 @@ import offAlert from '/src/images/offAlert.png';
 import useCloudStore from '@/store/chat/chat';
 import { usePopStore } from '@/store/popup';
 import Modal from 'react-modal';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -45,50 +47,47 @@ const Layout = () => {
     },
   };
 
-  // const code = new URL(document.location.toString()).searchParams.get('code');
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(sessionStorage.getItem('accessToken'));
+      if (sessionStorage.getItem('accessToken')) {
+        try {
+          const response = await axios.post('http://54.180.66.230/notification/list', {
+            curMemberX: 37.542181,
+            curMemberY: 127.074051,
+          });
 
-  // const loginHandler = () => {
-  //   window.location.href = link;
-  // };
+          console.log(response);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (code) {
-  //       try {
-  //         const response = await axios.post('http://54.180.66.230/user/login', {
-  //           authCode: code,
-  //           redirectUri: 'http://localhost:3000/auth/callback/kakao',
-  //         });
-
-  //         if (response.data.code === 0) {
-  //           navigate('/whisper');
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching data:', error);
-  //       }
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [code]);
+    fetchData();
+  }, [sessionStorage.getItem('accessToken')]);
 
   return (
     <div className="m-auto h-screen w-full max-w-[500px] bg-main bg-cover px-5">
-      {pathname === '/chat' || pathname === '/chatcollection' ? (
+      {pathname === '/whisper/chat' ||
+      pathname === '/whisper/chatcollection' ||
+      pathname === '/mapMarker' ||
+      pathname.includes('/mapStamp') ? (
         <div className="flex h-16 w-full justify-between  border-b-[1px] py-[14px] pl-5">
           <div className="flex justify-between">
             <img src={back} className="h-8 w-8 cursor-pointer" onClick={() => navigate(-1)} />
           </div>
           <span className="ml-10 text-lg font-bold leading-[35px] text-[#4A5568]">
-            {pathname === '/chat' ? '작성하기' : '구름 선택'}
+            {pathname === '/whisper/chat'
+              ? '작성하기'
+              : pathname === '/whisper/chatcollection'
+                ? '구름 선택'
+                : pathname === '/mapMarker'
+                  ? '지도에 던지기'
+                  : '구름 확인'}
           </span>
 
           <div className="flex justify-end">
-            <img
-              src={offAlert}
-              className="mr-2 h-8 w-8 cursor-pointer"
-              onClick={() => setTooltip(true)}
-            />
             {sessionStorage.getItem('accessToken') === null ? (
               <div
                 className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
@@ -113,6 +112,11 @@ const Layout = () => {
         </div>
       ) : (
         <div className=" flex h-16 w-full items-center justify-end border-b-[1px] bg-white py-[14px] pl-5">
+          <img
+            src={offAlert}
+            className="mr-2 h-8 w-8 cursor-pointer"
+            onClick={() => setTooltip(true)}
+          />
           {sessionStorage.getItem('accessToken') === null ? (
             <div
               className="mr-5 flex cursor-pointer items-center rounded bg-[#FEE500] px-2 py-1 text-black"
